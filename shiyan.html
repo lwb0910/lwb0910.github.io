@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>实验(0538李文博)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            border-bottom: 5px solid #fdbb2d;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .experiment-area {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+            gap: 20px;
+        }
+        
+        .experiment {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .experiment:hover {
+            transform: translateY(-5px);
+        }
+        
+        .experiment h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .experiment-content {
+            min-height: 350px;
+        }
+        
+        .reagent {
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        
+        .steps {
+            margin: 15px 0;
+        }
+        
+        .step {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .simulation {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .tube {
+            width: 80px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 0 0 10px 10px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #95a5a6;
+            margin: 0 auto 20px;
+            transition: all 1s ease;
+        }
+        
+        .liquid {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            border-radius: 0 0 8px 8px;
+            transition: all 1.5s ease;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background: #3498db;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .positive {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .negative {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .microscope {
+            width: 200px;
+            height: 150px;
+            background: #7f8c8d;
+            border-radius: 10px;
+            position: relative;
+            margin: 0 auto;
+            border: 3px solid #5d6d7e;
+        }
+        
+        .microscope::before {
+            content: "";
+            position: absolute;
+            width: 60px;
+            height: 40px;
+            background: #2c3e50;
+            border-radius: 50%;
+            top: 30px;
+            left: 70px;
+        }
+        
+        .slide {
+            width: 80px;
+            height: 10px;
+            background: #bdc3c7;
+            position: absolute;
+            top: 80px;
+            left: 60px;
+            border-radius: 2px;
+        }
+        
+        .fat-globules {
+            position: absolute;
+            top: 75px;
+            left: 70px;
+            width: 60px;
+            height: 60px;
+        }
+        
+        .globule {
+            position: absolute;
+            background: #ff8c00;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #2c3e50;
+            color: white;
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .experiment-area {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>生物组织成分检测虚拟实验</h1>
+            <p class="subtitle">斐林试剂 · 苏丹III染液 · 双缩脲试剂</p>
+        </header>
+        
+        <div class="experiment-area">
+            <div class="experiment">
+                <h2>还原糖检测（斐林试剂）</h2>
+                <div class="experiment-content">
+                    <div class="steps">
+                        <p class="step">1. 向试管中加入2mL待测组织样液</p>
+                        <p class="step">2. 加入1mL斐林试剂（甲液和乙液等量混合）</p>
+                        <p class="step">3. 将试管放入50-65℃水浴中加热约2分钟</p>
+                    </div>
+                    
+                    <div class="simulation">
+                        <div class="tube" id="sugar-tube">
+                            <div class="liquid" id="sugar-liquid" style="height: 30%; background: #f1c40f;"></div>
+                        </div>
+                        <p>当前状态：未加热</p>
+                    </div>
+                    
+                    <div class="controls">
+                        <button onclick="addReagent('sugar')">加入斐林试剂</button>
+                        <button onclick="heatTube('sugar')">加热</button>
+                        <button onclick="resetExperiment('sugar')">重置</button>
+                    </div>
+                    
+                    <div class="result" id="sugar-result"></div>
+                </div>
+            </div>
+            
+            <div class="experiment">
+                <h2>脂肪检测（苏丹III染液）</h2>
+                <div class="experiment-content">
+                    <div class="steps">
+                        <p class="step">1. 取花生子叶切片并制成临时装片</p>
+                        <p class="step">2. 向切片滴加2-3滴苏丹III染液，染色3分钟</p>
+                        <p class="step">3. 用50%酒精洗去浮色，制片观察</p>
+                    </div>
+                    
+                    <div class="simulation">
+                        <div class="microscope">
+                            <div class="slide"></div>
+                            <div class="fat-globules">
+                                <div class="globule" style="width: 8px; height: 8px; top: 15px; left: 20px;"></div>
+                                <div class="globule" style="width: 12px; height: 12px; top: 30px; left: 10px;"></div>
+                                <div class="globule" style="width: 6px; height: 6px; top: 40px; left: 35px;"></div>
+                                <div class="globule" style="width: 10px; height: 10px; top: 20px; left: 45px;"></div>
+                            </div>
+                        </div>
+                        <p id="fat-status">当前状态：未染色</p>
+                    </div>
+                    
+                    <div class="controls">
+                        <button onclick="stainFat()">苏丹III染色</button>
+                        <button onclick="washFat()">酒精清洗</button>
+                        <button onclick="resetExperiment('fat')">重置</button>
+                    </div>
+                    
+                    <div class="result" id="fat-result"></div>
+                </div>
+            </div>
+            
+            <div class="experiment">
+                <h2>蛋白质检测（双缩脲试剂）</h2>
+                <div class="experiment-content">
+                    <div class="steps">
+                        <p class="step">1. 向试管中加入2mL待测组织样液</p>
+                        <p class="step">2. 加入1mL双缩脲试剂A液，摇匀</p>
+                        <p class="step">3. 滴加4滴双缩脲试剂B液，摇匀</p>
+                    </div>
+                    
+                    <div class="simulation">
+                        <div class="tube" id="protein-tube">
+                            <div class="liquid" id="protein-liquid" style="height: 30%; background: #ecf0f1;"></div>
+                        </div>
+                        <p id="protein-status">当前状态：未添加试剂</p>
+                    </div>
+                    
+                    <div class="controls">
+                        <button onclick="addReagentA()">加入A液</button>
+                        <button onclick="addReagentB()">加入B液</button>
+                        <button onclick="resetExperiment('protein')">重置</button>
+                    </div>
+                    
+                    <div class="result" id="protein-result"></div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>高一(5)班 0538李文博</p>
+        </footer>
+    </div>
+
+    <script>
+        function addReagent(type) {
+            if (type === 'sugar') {
+                document.getElementById('sugar-liquid').style.height = '60%';
+                document.getElementById('sugar-liquid').style.background = '#3498db';
+                document.querySelector('#sugar-tube + p').textContent = '当前状态：已加入斐林试剂，等待加热';
+            }
+        }
+        
+        function heatTube(type) {
+            if (type === 'sugar') {
+                const liquid = document.getElementById('sugar-liquid');
+                if (liquid.style.background === 'rgb(52, 152, 219)') {
+                    liquid.style.background = '#c0392b';
+                    document.querySelector('#sugar-tube + p').textContent = '当前状态：已加热，出现砖红色沉淀';
+                    
+                    const result = document.getElementById('sugar-result');
+                    result.textContent = '检测结果：还原糖检测阳性（砖红色沉淀）';
+                    result.className = 'result positive';
+                    result.style.display = 'block';
+                }
+            }
+        }
+        
+        function stainFat() {
+            document.getElementById('fat-status').textContent = '当前状态：已染色，等待清洗';
+            
+            const globules = document.querySelectorAll('.globule');
+            globules.forEach(globule => {
+                globule.style.opacity = 1;
+            });
+        }
+        
+        function washFat() {
+            const status = document.getElementById('fat-status');
+            if (status.textContent === '当前状态：已染色，等待清洗') {
+                status.textContent = '当前状态：已清洗，可在显微镜下观察';
+                
+                const result = document.getElementById('fat-result');
+                result.textContent = '检测结果：脂肪检测阳性（橘黄色颗粒）';
+                result.className = 'result positive';
+                result.style.display = 'block';
+            }
+        }
+        
+        function addReagentA() {
+            document.getElementById('protein-liquid').style.height = '50%';
+            document.getElementById('protein-liquid').style.background = '#f1c40f';
+            document.getElementById('protein-status').textContent = '当前状态：已加入A液，请加入B液';
+        }
+        
+        function addReagentB() {
+            const status = document.getElementById('protein-status');
+            if (status.textContent === '当前状态：已加入A液，请加入B液') {
+                document.getElementById('protein-liquid').style.background = '#8e44ad';
+                status.textContent = '当前状态：已加入B液，出现紫色反应';
+                
+                const result = document.getElementById('protein-result');
+                result.textContent = '检测结果：蛋白质检测阳性（紫色反应）';
+                result.className = 'result positive';
+                result.style.display = 'block';
+            }
+        }
+        
+        function resetExperiment(type) {
+            if (type === 'sugar') {
+                document.getElementById('sugar-liquid').style.height = '30%';
+                document.getElementById('sugar-liquid').style.background = '#f1c40f';
+                document.querySelector('#sugar-tube + p').textContent = '当前状态：未加热';
+                document.getElementById('sugar-result').style.display = 'none';
+            }
+            else if (type === 'fat') {
+                document.getElementById('fat-status').textContent = '当前状态：未染色';
+                const globules = document.querySelectorAll('.globule');
+                globules.forEach(globule => {
+                    globule.style.opacity = 0;
+                });
+                document.getElementById('fat-result').style.display = 'none';
+            }
+            else if (type === 'protein') {
+                document.getElementById('protein-liquid').style.height = '30%';
+                document.getElementById('protein-liquid').style.background = '#ecf0f1';
+                document.getElementById('protein-status').textContent = '当前状态：未添加试剂';
+                document.getElementById('protein-result').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
