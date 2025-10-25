@@ -3,8 +3,9 @@
 <script>
 alert("欢迎使用我的个人网站！点击确定即代表您同意《用户协议》")
 let a = prompt("请输入访问密码")
-if (a=="王兆琨") alert("曼波")
-else alert("哈基米")
+if (a!="王兆琨"||a!='')
+err.style.color="black"
+else rig.style.color="black"
 </script>
 <html>
 	<head>
@@ -25,7 +26,7 @@ else alert("哈基米")
 			}
 		</style>
 	</head>
-	<body>
+	<body id="err">
 		<h1>欢迎来到个人网站！</h1><hr><hr>
 		<h1>作业</h1>
 		<h3>第2代个人网站</h3>
@@ -162,4 +163,5 @@ else alert("哈基米")
 	<hr><hr>
 	<h6>网站版本: v0.0.0</h6>
 	</body>
+<h1 id=reg>密码错误！</h1>
 </html>
